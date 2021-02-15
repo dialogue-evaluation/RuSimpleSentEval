@@ -15,7 +15,7 @@
 
 ## Данные
 
-* Автоматически переведенный на русский  корпус WikiLarge [1]. Данные доступны по ссылке. 
+* Автоматически переведенный на русский  корпус WikiLarge [1]. Данные доступны по [ссылке](https://drive.google.com/drive/folders/1jfij3KuiRbO_XoLiquSBP2mZafzPhrsL). 
 * Собранный организаторами на краудсорсинговой платформе корпус. Dev датасет (пары сложное –  простое предложение) доступен по ссылке. Сложные предложения из public test для первой фазы соревнования доступны по ссылке. 
 
 1. Zhang, X. and Lapata, M., 2017, September. Sentence Simplification with Deep Reinforcement Learning. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing (pp. 584-594).
