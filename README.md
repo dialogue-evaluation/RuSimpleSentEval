@@ -30,4 +30,6 @@
 * Иван Смуров, ABBYY, МФТИ
 * Елена Тутубалина, КФУ, ВШЭ
 
+
+[**Страница соревнования на CodaLab**] (https://competitions.codalab.org/competitions/29037#learn_the_details)
 [**Телеграм-чат соревнования**](https://t.me/rsse2021)
