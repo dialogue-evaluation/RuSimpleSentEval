@@ -24,7 +24,10 @@
 
 1. Zhang, X. and Lapata, M., 2017, September. Sentence Simplification with Deep Reinforcement Learning. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing (pp. 584-594).
 
-## Бэйзлайн
+## Метрика 
+Мы используем метрику SARI, конкретно в реализации библиотеки [EASSE](https://github.com/feralvam/easse).
+
+## Базовое решение
 
 В качестве бэйзлайна выступает претренированная модель multilingual BART (mBART) [2,3], дообученная на переведённом на русский корпусе WikiLarge. Для обучения использована библиотека FairSeq [4], в частности, в следующий пример:
 https://github.com/pytorch/fairseq/tree/master/examples/mbart
