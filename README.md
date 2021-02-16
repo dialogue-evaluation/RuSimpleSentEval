@@ -20,6 +20,7 @@
 
 * Автоматически переведенный на русский  корпус WikiLarge [1]. Данные доступны по [ссылке](https://drive.google.com/drive/folders/1jfij3KuiRbO_XoLiquSBP2mZafzPhrsL). 
 * Собранный организаторами на краудсорсинговой платформе корпус. Dev датасет (пары сложное –  простое предложение) доступен по [ссылке](https://github.com/dialogue-evaluation/RuSimpleSentEval/blob/main/dev_sents.csv). Сложные предложения из public test для первой фазы соревнования доступны по [ссылке](public_test_only.csv). 
+* Большой корпус кластеров парафраз заголовков ParaPhraserPlus. Данные доступны по [ссылке](http://paraphraser.ru/download/). 
 
 1. Zhang, X. and Lapata, M., 2017, September. Sentence Simplification with Deep Reinforcement Learning. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing (pp. 584-594).
 
@@ -155,9 +156,9 @@ cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.h
 * Екатерина Артемова, ВШЭ, HUAWEI
 * Александра Ижевская, ВШЭ
 * Валентин Малых, КФУ, HUAWEI
-* Иван Смуров, ABBYY, МФТИ
 * Алена Пестова, ВШЭ
 * Андрей Саховский, КФУ
+* Иван Смуров, ABBYY, МФТИ
 * Елена Тутубалина, КФУ, ВШЭ
 
 
