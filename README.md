@@ -23,6 +23,126 @@
 
 1. Zhang, X. and Lapata, M., 2017, September. Sentence Simplification with Deep Reinforcement Learning. In Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing (pp. 584-594).
 
+## Бэйзлайн
+
+В качестве бэйзлайна выступает модель multilingual BART (mBART), обученная на переведённом на русский корпусе WikiLarge. Для обучения использована библиотека FairSeq TODO reference, в частности, в следующий пример:
+https://github.com/pytorch/fairseq/tree/master/examples/mbart
+
+Для обучения модели mBART необходимо:
+
+1. Скачать предобученную mBART:
+
+```
+wget https://dl.fbaipublicfiles.com/fairseq/models/mbart/mbart.cc25.v2.tar.gz
+tar -xzvf mbart.CC25.tar.gz
+```
+
+2. Установить токенизатор [SentencePiece](https://github.com/google/sentencepiece):
+
+```
+sudo apt-get install cmake build-essential pkg-config libgoogle-perftools-dev
+git clone https://github.com/google/sentencepiece.git 
+cd sentencepiece
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig -v
+```
+https://github.com/google/sentencepiece
+
+3. Установить [FairSeq](https://github.com/pytorch/fairseq):
+
+```
+git clone https://github.com/pytorch/fairseq
+cd fairseq
+pip install --editable ./
+```
+
+4. Перед началом обучения необходимо предобработать данные, распределив соответствующие исходные и упрощённые предложения по разным файлам. Каждая строка соответствует в точности одному предложению. После чего происходит токенизация исходных и упрощённых предложений: 
+
+```
+SPM=/path/to/sentencepiece/build/src/spm_encode
+BPE_MODEL=/path/to/mbart/directory/sentence.bpe.model
+DATA_DIR=/path/to/data
+SRC=src
+TGT=dst
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/train.${SRC} > ${DATA_DIR}/train.spm.${SRC} &
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/train.${TGT} > ${DATA_DIR}/train.spm.${TGT} &
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/valid.${SRC} > ${DATA_DIR}/valid.spm.${SRC} &
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/valid.${TGT} > ${DATA_DIR}/valid.spm.${TGT} &
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/test.${SRC} > ${DATA_DIR}/test.spm.${SRC} &
+${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/test.${TGT} > ${DATA_DIR}/test.spm.${TGT} &
+```
+5. Предобработка данных с использованием словаря ($DICT) предобученной mBART:
+
+```
+PREPROCESSED_DATA_DIR=/directory/to/save/preprocessed/data
+DICT=/path/to/downloaded/mbart/model/directory/dict.txt
+fairseq-preprocess \
+  --source-lang ${SRC} \
+  --target-lang ${TGT} \
+  --trainpref ${DATA_DIR}/train.spm \
+  --validpref ${DATA_DIR}/valid.spm \
+  --testpref ${DATA_DIR}/test.spm \
+  --destdir ${PREPROCESSED_DATA_DIR} \
+  --thresholdtgt 0 \
+  --thresholdsrc 0 \
+  --srcdict ${DICT} \
+  --tgtdict ${DICT} \
+  --workers 70
+```
+
+6. Для обучения модели можно использовать FairSeq:
+
+```
+PRETRAIN=/path/to/downloaded/mbart/model/directory/model.pt
+langs=ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN
+CUDA_VISIBLE_DEVICES=0,1,2,3
+SAVE_DIR=/path/to/save/model/checkpoint
+fairseq-train ${PREPROCESSED_DATA_DIR} \
+  --encoder-normalize-before --decoder-normalize-before \
+  --arch mbart_large --layernorm-embedding \
+  --task translation_from_pretrained_bart \
+  --criterion label_smoothed_cross_entropy --label-smoothing 0.2 \
+  --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' \
+  --lr-scheduler polynomial_decay --lr 3e-05 --warmup-updates 2500 --total-num-update 54725  \
+  --dropout 0.3 --attention-dropout 0.1 --weight-decay 0.0 \
+  --max-tokens 1024 --update-freq 2 \
+  --source-lang ${SRC} --target-lang ${TGT} \
+  --batch-size 16 \
+  --validate-interval 1 \
+  --patience 3 \
+  --max-epoch 25 \
+  --save-interval 5 --keep-last-epochs 10 --keep-best-checkpoints 2 \
+  --seed 42 --log-format simple --log-interval 500 \
+  --restore-file ${PRETRAIN} \
+  --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler \
+  --ddp-backend no_c10d \
+  --langs $langs \
+  --scoring bleu \
+  --save-dir ${SAVE_DIR} > train_log.txt &
+```
+
+Результат обучения (чекпоинт обученной модели) может выступать в качестве претренированной модели для дальнейшего обучения. Например, возможно обучить модель на оригинальном английском WikiLarge, после чего изменить путь до предобученной модели (${PRETRAIN}) на путь до чекпоинта, находящегося в директории ${SAVE_DIR}. Возможный путь до предобученной модели будет выглядеть как "${SAVE_DIR}/checkpoint15.pt".  
+
+7. Предсказание модели может быть получено следующим образом:
+
+```
+CUDA_VISIBLE_DEVICES=0
+LANG=C.UTF-8 LC_ALL=C.UTF-8
+fairseq-generate ${DATA_DIR} \
+  --path ${SAVE_DIR}/checkpoint_best.pt \
+  --task translation_from_pretrained_bart \
+  --gen-subset valid \
+  --source-lang src --target-lang dst \
+  --bpe 'sentencepiece' --sentencepiece-model ${BPE_MODEL} \
+  --sacrebleu --remove-bpe 'sentencepiece' \
+  --batch-size 32 --langs $langs > model_prediction.txt & 
+
+cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.hyp
+```
 
 ## Организаторы:
 * Екатерина Артемова, ВШЭ, HUAWEI
