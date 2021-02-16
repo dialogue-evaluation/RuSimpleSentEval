@@ -157,6 +157,7 @@ cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.h
 * Валентин Малых, КФУ, HUAWEI
 * Иван Смуров, ABBYY, МФТИ
 * Алена Пестова, ВШЭ
+* Андрей Саховский, КФУ
 * Елена Тутубалина, КФУ, ВШЭ
 
 
