@@ -155,6 +155,51 @@ cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.h
 
 3. Ott, Myle, et al. "fairseq: A Fast, Extensible Toolkit for Sequence Modeling." Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations). 2019.
 
+## Оценка качества
+
+Для оценки качества упрощения текстов используется библиотека EASSE [5].
+
+1. Клонирование репозитория EASSE:
+
+```
+git clone https://github.com/feralvam/easse
+```
+
+2. Замена скрипта оценки SARI на немного модифицированной. Модификация необходима для поддержки датасетов, в которых различные примеры содержат различное, а не фиксированное число эталонных упрощения.
+```
+git clone https://github.com/Andoree/sent_simplification.git
+cp sent_simplification/sari.py $EASSE_DIR/easse
+```
+
+3. Установка EASSE:
+```
+cd $EASSE_DIR
+pip install .
+```
+
+4. Приведение данных к формату, принимаемому EASSE, с помощью скрипта из [этого](https://github.com/Andoree/sent_simplification) репозитория:
+```
+refs_to_easse_format.py \
+--input_path $PATH_TO_ANNOTATED_DATA_CSV \
+--src_column $SOURCE_COLUMN_NAME \
+--trg_column $TARGET_COLUMN_NAME \
+--output_dataset_name $DATASET_NAME \
+--output_dir $REFERENCES_DIR
+```
+
+5. Подсчёт SARI и BLEU:
+```
+easse evaluate \
+--test_set custom \
+--metrics bleu,sari \
+--refs_sents_paths $REFERENCES_DIR/$DATASET_NAME.ref.0,$REFERENCES_DIR/$DATASET_NAME.ref.1,$REFERENCES_DIR/$DATASET_NAME.ref.2,$REFERENCES_DIR/$DATASET_NAME.ref.3,$REFERENCES_DIR/$DATASET_NAME.ref.4,$REFERENCES_DIR/$DATASET_NAME.ref.5,$REFERENCES_DIR/$DATASET_NAME.ref.6,$REFERENCES_DIR/$DATASET_NAME.ref.7,$REFERENCES_DIR/$DATASET_NAME.ref.8,$REFERENCES_DIR/$DATASET_NAME.ref.9,$REFERENCES_DIR/$DATASET_NAME.ref.10,$REFERENCES_DIR/$DATASET_NAME.ref.11,$REFERENCES_DIR/$DATASET_NAME.ref.12,$REFERENCES_DIR/$DATASET_NAME.ref.13,$REFERENCES_DIR/$DATASET_NAME.ref.14,$REFERENCES_DIR/$DATASET_NAME.ref.15,$REFERENCES_DIR/$DATASET_NAME.ref.16,$REFERENCES_DIR/$DATASET_NAME.ref.17,$REFERENCES_DIR/$DATASET_NAME.ref.18,$REFERENCES_DIR/$DATASET_NAME.ref.19,$REFERENCES_DIR/$DATASET_NAME.ref.20  \
+-=orig_sents_path $REFERENCES_DIR/$DATASET_NAME.src \
+--sys_sents_path $MODEL_PREDICTION_PATH -q
+```
+
+
+[5] Alva-Manchego, Fernando, et al. "EASSE: Easier Automatic Sentence Simplification Evaluation." Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP): System Demonstrations. 2019.
+
 ## Организаторы:
 * Екатерина Артемова, ВШЭ, HUAWEI
 * Александра Ижевская, ВШЭ
