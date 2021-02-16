@@ -67,8 +67,8 @@ pip install --editable ./
 SPM=/path/to/sentencepiece/build/src/spm_encode
 BPE_MODEL=/path/to/mbart/directory/sentence.bpe.model
 DATA_DIR=/path/to/data
-SRC=src
-TGT=dst
+SRC=en
+TGT=ru
 ${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/train.${SRC} > ${DATA_DIR}/train.spm.${SRC} &
 ${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/train.${TGT} > ${DATA_DIR}/train.spm.${TGT} &
 ${SPM} --model=${BPE_MODEL} < ${DATA_DIR}/valid.${SRC} > ${DATA_DIR}/valid.spm.${SRC} &
@@ -145,12 +145,12 @@ fairseq-generate ${DATA_DIR} \
 cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.hyp
 ```
 
+### Литература:
+1. Lewis, Mike, et al. "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension." Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics. 2020.
 
-2. Lewis, Mike, et al. "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension." Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics. 2020.
+2. Liu, Yinhan, et al. "Multilingual denoising pre-training for neural machine translation." Transactions of the Association for Computational Linguistics 8 (2020): 726-742.
 
-3. Liu, Yinhan, et al. "Multilingual denoising pre-training for neural machine translation." Transactions of the Association for Computational Linguistics 8 (2020): 726-742.
-
-4. Ott, Myle, et al. "fairseq: A Fast, Extensible Toolkit for Sequence Modeling." Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations). 2019.
+3. Ott, Myle, et al. "fairseq: A Fast, Extensible Toolkit for Sequence Modeling." Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations). 2019.
 
 ## Организаторы:
 * Екатерина Артемова, ВШЭ, HUAWEI
