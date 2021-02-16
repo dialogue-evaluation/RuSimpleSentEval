@@ -25,7 +25,7 @@
 
 ## Бэйзлайн
 
-В качестве бэйзлайна выступает модель multilingual BART (mBART), обученная на переведённом на русский корпусе WikiLarge. Для обучения использована библиотека FairSeq TODO reference, в частности, в следующий пример:
+В качестве бэйзлайна выступает претренированная модель multilingual BART (mBART) [2,3], дообученная на переведённом на русский корпусе WikiLarge. Для обучения использована библиотека FairSeq [4], в частности, в следующий пример:
 https://github.com/pytorch/fairseq/tree/master/examples/mbart
 
 Для обучения модели mBART необходимо:
@@ -50,7 +50,7 @@ make
 sudo make install
 sudo ldconfig -v
 ```
-https://github.com/google/sentencepiece
+
 
 3. Установить [FairSeq](https://github.com/pytorch/fairseq):
 
@@ -94,7 +94,7 @@ fairseq-preprocess \
   --workers 70
 ```
 
-6. Для обучения модели можно использовать FairSeq:
+6. Обучение модели. Полный список параметров можно получить вызовом "fairseq-train --help":
 
 ```
 PRETRAIN=/path/to/downloaded/mbart/model/directory/model.pt
@@ -143,6 +143,12 @@ fairseq-generate ${DATA_DIR} \
 
 cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.hyp
 ```
+
+2. Lewis, Mike, et al. "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension." Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics. 2020.
+
+3. Liu, Yinhan, et al. "Multilingual denoising pre-training for neural machine translation." Transactions of the Association for Computational Linguistics 8 (2020): 726-742.
+
+4. Ott, Myle, et al. "fairseq: A Fast, Extensible Toolkit for Sequence Modeling." Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics (Demonstrations). 2019.
 
 ## Организаторы:
 * Екатерина Артемова, ВШЭ, HUAWEI
