@@ -135,7 +135,7 @@ LANG=C.UTF-8 LC_ALL=C.UTF-8
 fairseq-generate ${DATA_DIR} \
   --path ${SAVE_DIR}/checkpoint_best.pt \
   --task translation_from_pretrained_bart \
-  --gen-subset valid \
+  --gen-subset test \
   --source-lang src --target-lang dst \
   --bpe 'sentencepiece' --sentencepiece-model ${BPE_MODEL} \
   --sacrebleu --remove-bpe 'sentencepiece' \
