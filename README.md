@@ -144,6 +144,7 @@ fairseq-generate ${DATA_DIR} \
 cat model_prediction.txt | grep -P "^H" |sort -V |cut -f 3- > model_prediction.hyp
 ```
 
+
 2. Lewis, Mike, et al. "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension." Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics. 2020.
 
 3. Liu, Yinhan, et al. "Multilingual denoising pre-training for neural machine translation." Transactions of the Association for Computational Linguistics 8 (2020): 726-742.
